@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Polymarket NCAA Odds for YouTube TV",
+  "version": "2.4.0",
+  "description": "Display live Polymarket NCAA game odds on YouTube TV",
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://gamma-api.polymarket.com/*",
+    "https://clob.polymarket.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://tv.youtube.com/*"],
+      "js": ["src/content/content-script-simple.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content/iframe-widget.html", "src/content/iframe-widget.js"],
+      "matches": ["https://tv.youtube.com/*"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}
