@@ -1,20 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Polymarket Odds for YouTube TV",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Display live Polymarket odds on YouTube TV",
   "permissions": [
-    "storage",
-    "alarms"
+    "storage"
   ],
-  "host_permissions": [
-    "https://gamma-api.polymarket.com/*",
-    "https://clob.polymarket.com/*"
-  ],
-  "background": {
-    "service_worker": "src/background/service-worker.js",
-    "type": "module"
-  },
   "content_scripts": [
     {
       "matches": ["https://tv.youtube.com/*"],
