@@ -1,274 +1,226 @@
-# Polymarket NCAA Odds for YouTube TV
+# Polymarket Odds for YouTube TV
 
-A Chrome extension that displays live Polymarket NCAA game odds as a corner widget overlay on YouTube TV.
+A lightweight Chrome extension that displays live Polymarket odds as a corner widget overlay on YouTube TV.
+
+Simply paste any Polymarket URL and watch live odds update in real-time while you stream.
 
 ## Features
 
-- **Live Odds Display**: Watch real-time Polymarket odds for NCAA games
-- **Game Selection**: Search and select from available NCAA games
-- **Collapsible Widget**: Non-intrusive corner widget that expands on demand
-- **Auto-Refresh**: Odds update every 30 seconds automatically
-- **Trend Indicators**: See if odds are rising 📈, falling 📉, or stable ➡️
-- **Dark Theme**: Designed to blend seamlessly with YouTube TV's interface
+- **📊 Live Odds Display**: Display any Polymarket market directly on YouTube TV
+- **🎯 URL-Based**: Paste a Polymarket URL to instantly load odds
+- **🌓 Theme Toggle**: Switch between dark and light modes
+- **👁️ Activity Toggle**: Show or hide activity data
+- **⚡ Real-Time Updates**: Official Polymarket embed handles live updates
+- **📱 Non-Intrusive**: Compact corner widget that doesn't interfere with video playback
+- **✨ Clean Design**: Minimalist neon chart icon
+
+## Demo
+
+Watch the extension in action:
+
+**[Demo Video](polyontv.mp4)** - See how to use the extension to view Polymarket odds while watching YouTube TV
 
 ## Installation
 
-### From Source (Development Mode)
+### From Chrome Web Store (Coming Soon)
+Once approved, install directly from the Chrome Web Store for automatic updates.
 
-1. Clone or extract the extension files to `/Users/mike/Developer/poly-on-tv`
+### Manual Installation (Developer Mode)
 
-2. Open Chrome and go to `chrome://extensions/`
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/mykcryptodev/poly-on-tv.git
+   cd poly-on-tv
+   ```
+
+2. Open Chrome and navigate to `chrome://extensions/`
 
 3. Enable **Developer mode** (toggle in top-right corner)
 
 4. Click **Load unpacked**
 
-5. Select the `/Users/mike/Developer/poly-on-tv` folder
+5. Select the `poly-on-tv` folder
 
-6. The extension will appear in your extensions list and toolbar
+6. The extension will appear in your extensions list
 
-### First Time Setup
+## Quick Start
 
 1. Navigate to [YouTube TV](https://tv.youtube.com)
-2. Look for the **📊 Odds** button in the top-right corner of the player
-3. Click to expand the widget
-4. Click the **Games** tab to see available NCAA games
-5. Search for a game (by team name) and click to select it
-6. The widget will switch to the **Odds** tab and start showing live odds
 
-## Usage
+2. Look for the **Polymarket** icon in the top-right corner of the page
 
-### Viewing Odds
+3. Click the widget to expand it
 
-1. **Expand the Widget**: Click the "📊 Odds" button in the top-right corner
-2. **Select a Game**: Click the "Games" tab, search for teams, and select a game
-3. **Watch Live Odds**: The odds will update automatically every 30 seconds
-4. **Collapse**: Click the "📊 Odds" button again to minimize the widget
+4. Paste a Polymarket URL (e.g., `https://polymarket.com/market/will-the-lakers-beat-the-celtics-on-march-22`)
 
-### Understanding the Odds
+5. Click **Load Odds** to display the market
 
-- **Team Name**: The college basketball team
-- **Percentage**: The implied probability that team will win (e.g., 65.4%)
-- **Trend Indicator**: Shows if odds are moving up or down since last update
-- **Live Indicator**: Green pulsing dot shows data is actively updating
-- **Last Updated**: How long ago the odds were last refreshed
-
-### Keyboard Shortcuts
-
-- **Tab**: Navigate through elements
-- **Enter**: Select focused game or button
-- **Escape**: Close search/reset (future version)
+6. Use the control buttons:
+   - **⊞** (Activity) - Toggle activity display on/off
+   - **☀️** (Theme) - Switch between dark and light modes
+   - **✕** (Close) - Remove the widget
 
 ## How It Works
 
+The extension is simple and lightweight:
+
+```
+User clicks widget
+        ↓
+Pastes Polymarket URL
+        ↓
+Extension extracts market slug
+        ↓
+Displays official Polymarket embed
+        ↓
+Embed handles live odds updates
+```
+
 ### Architecture
 
-```
-YouTube TV
-    ↓
-Content Script
-    ↓ (messages)
-Background Service Worker
-    ↓
-Polymarket API
-```
+- **Content Script** (`src/content/content-script-simple.js`): Injects the widget into YouTube TV
+- **Widget UI** (`src/content/iframe-widget.html`): Widget interface
+- **Widget Logic** (`src/content/iframe-widget.js`): Handles URL input, theme/activity toggles, and widget close
+- **Official Embed**: Polymarket's native iframe displays live market data
 
-### Component Breakdown
+No background service worker, no API calls, no data collection - just a clean widget wrapper around Polymarket's official embed.
 
-1. **Content Script** (`src/content/`)
-   - Detects YouTube TV page
-   - Injects the widget UI
-   - Handles user interactions
-   - Receives odds updates from background
-
-2. **Background Service Worker** (`src/background/`)
-   - Manages Polymarket API calls
-   - Caches market and odds data
-   - Polls for live odds updates
-   - Broadcasts updates to content script
-
-3. **Polymarket Integration**
-   - **Gamma API**: Discovers available NCAA markets
-   - **CLOB API**: Fetches live odds prices
-
-## Configuration
-
-### Polling Interval
-
-Odds refresh every 30 seconds (Manifest V3 minimum). To adjust:
-
-Edit `src/shared/constants.js`:
-
-```javascript
-export const POLLING_CONFIG = {
-  ODDS_INTERVAL: 30 * 1000, // milliseconds
-  ALARMS_INTERVAL: 0.5, // minutes
-};
-```
-
-### Market Filtering
-
-To adjust which games are shown, edit `src/shared/constants.js`:
-
-```javascript
-export const MARKET_FILTERS = {
-  NCAA_KEYWORDS: ['NCAA', 'College Basketball'],
-  WINNER_KEYWORDS: ['winner', 'win', 'beats'],
-};
-```
-
-## Troubleshooting
-
-### Widget Not Appearing
-
-- Ensure you're on YouTube TV (tv.youtube.com)
-- Check browser console (F12 → Console) for errors
-- Reload the page (F5)
-- Disable and re-enable the extension
-
-### No Games Showing
-
-- Wait a few seconds for initial market load
-- Refresh the page
-- Check network tab to see if Polymarket APIs are responding
-- NCAA games may not be available at certain times
-
-### Odds Not Updating
-
-- Check that a game is selected (should show team odds)
-- Wait 30+ seconds for next update
-- Ensure background service worker is active (check extension page)
-- Check browser console for API errors
-
-### Performance Issues
-
-- Close other heavy browser tabs
-- Disable other extensions temporarily
-- Clear browser cache
-
-## Development
-
-### Project Structure
+## Project Structure
 
 ```
 poly-on-tv/
-├── manifest.json              # Extension configuration
+├── manifest.json                    # Extension configuration (Manifest V3)
 ├── src/
-│   ├── background/
-│   │   ├── service-worker.js  # Main background logic
-│   │   ├── api/
-│   │   │   ├── polymarket.js  # Polymarket API client
-│   │   │   └── cache.js       # Caching layer
-│   │   └── state.js           # State management
-│   ├── content/
-│   │   ├── content-script.js  # Content script entry
-│   │   ├── youtube-tv-adapter.js
-│   │   └── ui/
-│   │       ├── widget.js      # Main widget component
-│   │       ├── dropdown.js    # Game selector
-│   │       └── odds-display.js
-│   ├── shared/
-│   │   ├── constants.js       # Config values
-│   │   ├── utils.js           # Utilities
-│   │   └── messaging.js       # Chrome messaging
-│   └── styles/
-│       ├── widget.css         # Widget styling
-│       └── dropdown.css       # Dropdown styling
-├── icons/                      # Extension icons
-└── README.md
+│   └── content/
+│       ├── content-script-simple.js # Injects widget into YouTube TV
+│       ├── iframe-widget.html       # Widget UI and styles
+│       └── iframe-widget.js         # Widget logic and controls
+├── icons/
+│   ├── icon16.png                   # 16x16 neon chart icon
+│   ├── icon48.png                   # 48x48 neon chart icon
+│   └── icon128.png                  # 128x128 neon chart icon
+├── marketing_images/                # Chrome Web Store screenshots
+├── README.md                        # This file
+├── CHROME_STORE_SUBMISSION.md       # Chrome Web Store submission guide
+└── CHROME_STORE_ANSWERS.md          # Form answers for submission
 ```
 
-### Making Changes
+## Usage
 
-1. Edit files in `src/` or `manifest.json`
-2. Go to `chrome://extensions`
-3. Click the refresh icon on the Polymarket extension card
-4. Reload YouTube TV to test
+### Displaying a Market
 
-### Building for Distribution
+1. Find a Polymarket URL you want to display
+   - Example: `https://polymarket.com/sports/cbb/duke-vs-unc-2026-03-22`
 
-1. Ensure all code is production-ready
-2. Test thoroughly on different screen sizes
-3. Create promotional images (1280x800)
-4. Submit to Chrome Web Store
+2. Click the Polymarket widget in YouTube TV's top-right corner
 
-## API Reference
+3. Paste the URL into the input field
 
-### Polymarket Gamma API
+4. Click **Load Odds**
 
-**Get Sports/Tags**
-```
-GET https://gamma-api.polymarket.com/sports
-```
+5. The official Polymarket embed will display with live odds
 
-**Get Markets**
-```
-GET https://gamma-api.polymarket.com/markets?tag_id={TAG_ID}&closed=false
-```
+### Theme Toggle
 
-### Polymarket CLOB API
+Click the **☀️** button to switch between dark and light themes. The theme preference is saved locally.
 
-**Get Midpoint (Current Price)**
-```
-GET https://clob.polymarket.com/midpoint?token_id={TOKEN_ID}
-Response: { "mid": "0.6543" }
-```
+### Activity Toggle
 
-## Privacy & Security
+Click the **⊞** button to show or hide activity data in the market display.
 
-- **No Data Collection**: Extension doesn't track or store user data
-- **No Analytics**: No telemetry or usage tracking
-- **Read-Only**: Only reads public Polymarket data
-- **No Authentication**: No login required
-- **No Permissions**: Only requests necessary permissions (storage, alarms)
+### Closing the Widget
+
+Click the **✕** button to remove the widget completely. You can re-open it anytime by clicking the extension icon.
+
+## Permissions
+
+The extension uses minimal permissions:
+
+- **`storage`**: Saves your theme and activity preferences locally (no data sent anywhere)
+
+That's it. No background service worker, no API access, no user tracking, no data collection.
+
+## Privacy
+
+- ✅ **Zero Data Collection**: Extension doesn't collect or track any user data
+- ✅ **No Analytics**: No telemetry, no usage tracking
+- ✅ **Local Storage Only**: Theme and activity preferences stored locally in your browser
+- ✅ **Read-Only**: Only displays publicly available Polymarket data
+- ✅ **No Authentication**: No login required
+- ✅ **Open Source**: Code is transparent and auditable
 
 ## Limitations
 
-- Works only on YouTube TV
-- NCAA markets must exist on Polymarket
-- Polling limited to 30 seconds (Chrome Manifest V3 minimum)
-- Markets may be unavailable during off-season
-- Odds update frequency depends on Polymarket's API
+- Works only on YouTube TV (`tv.youtube.com`)
+- Markets must exist on Polymarket
+- Odds update frequency depends on Polymarket's official embed
+- Widget position is fixed to top-right corner
 
-## Future Enhancements
+## Troubleshooting
 
-- [ ] Multi-game tracking
-- [ ] Historical odds charts
-- [ ] Prop bet markets (not just game winners)
-- [ ] Price alerts/notifications
-- [ ] Dark mode theme toggle
-- [ ] Customizable widget position (drag-and-drop)
-- [ ] WebSocket integration for real-time updates
-- [ ] Additional market types (spreads, totals)
-- [ ] Mobile YouTube TV support
-- [ ] Export odds to spreadsheet
+### Widget Not Showing
 
-## Support & Issues
+- Ensure you're on YouTube TV (tv.youtube.com)
+- Reload the page (F5)
+- Check that the extension is enabled in `chrome://extensions/`
+- Disable other extensions to check for conflicts
 
-If you encounter issues:
+### Invalid URL Error
 
-1. Check the troubleshooting section above
-2. Open browser console (F12 → Console) for error messages
-3. Test on a fresh YouTube TV page
-4. Disable other extensions temporarily
-5. Clear browser cache
+- Make sure you're using a valid Polymarket URL
+- Example format: `https://polymarket.com/sports/...`
+- Check the URL contains the market slug
+
+### Theme/Activity Toggle Not Working
+
+- Reload the page and try again
+- Clear your browser cache
+
+## Contributing
+
+Found a bug? Want to improve the extension?
+
+1. Open an issue on GitHub
+2. Create a pull request with your changes
+3. Ensure your code follows the existing style
+
+## Development
+
+### Making Changes
+
+1. Edit files in `src/content/`
+2. Go to `chrome://extensions`
+3. Click the **reload** icon on the Polymarket extension
+4. Refresh YouTube TV to test
+
+### Building for Distribution
+
+The extension zip is automatically created at `poly-on-tv-extension.zip` for Chrome Web Store submission.
+
+## Chrome Web Store
+
+Submission documents:
+- **[CHROME_STORE_SUBMISSION.md](CHROME_STORE_SUBMISSION.md)** - Complete submission guide
+- **[CHROME_STORE_ANSWERS.md](CHROME_STORE_ANSWERS.md)** - Answers to submission form questions
+- **poly-on-tv-extension.zip** - Ready-to-upload extension package
 
 ## Credits
 
-- [Polymarket](https://polymarket.com/) for API access
-- Inspired by live betting overlays
-- Built with vanilla JavaScript (no frameworks)
+- [Polymarket](https://polymarket.com/) for providing the official embed and APIs
+- Built with vanilla JavaScript (no frameworks or heavy dependencies)
+- Designed for minimal footprint and maximum simplicity
 
 ## License
 
-This extension is provided as-is. Use at your own discretion.
+This extension is provided as-is. Feel free to use, modify, and distribute.
 
 ## Disclaimer
 
-This extension is for informational purposes only. It displays publicly available Polymarket data. Always do your own research before making any trades or bets. The developers are not responsible for any financial decisions based on displayed odds.
+This extension displays publicly available Polymarket data. It is for informational purposes only. Always do your own research before making any financial decisions or trades. The developers are not responsible for any outcomes based on displayed odds or data.
 
 ---
 
-**Created**: March 2026
-**Version**: 1.0.0
-**Status**: Beta
+**Version**: 2.5.0
+**Status**: Production
+**Last Updated**: March 2026
+**License**: Open Source
